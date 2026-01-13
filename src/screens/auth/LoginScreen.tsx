@@ -11,6 +11,7 @@ import { CustomText } from '../../components/ui';
 import { ScreenLayout } from '../../components/layout';
 import { verticalScale, moderateScale } from '../../utils/responsive';
 import { sanitizeNumbersOnly } from '../../utils/sanitize';
+import { generateOTP } from '../../services/api';
 
 const LoginScreen = ({ navigation }: any) => {
   const [mobileNumber, setMobileNumber] = useState('');
@@ -32,9 +33,11 @@ const LoginScreen = ({ navigation }: any) => {
 
     setLoading(true);
     try {
-      // TODO: Implement otp generation api hit here
+      const response = await generateOTP(mobileNumber);
       setLoading(false);
-      navigation.navigate('OTP', { mobileNumber });
+      if (response && response?.status === true && response?.data) {
+        navigation.navigate('OTP', { mobileNumber });
+      }
     } catch (error: any) {
       setLoading(false);
       console.error(error);

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { getToken, storeToken, clearToken } from '../services/api';
 
 interface AuthContextType {
   isLoading: boolean;
@@ -15,9 +16,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const loadToken = async () => {
     try {
-      // TODO: Get Token form api and set it in userToken state
-      // const token = await getToken();
-      // setUserToken(token);
+      const token = await getToken();
+      setUserToken(token);
     } catch (e) {
       console.error(e);
     } finally {
@@ -30,12 +30,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const signIn = async (token: string) => {
-    // TODO: Store Token in async storage and set uSerToken state
+    await storeToken(token);
     setUserToken(token);
   };
 
   const signOut = async () => {
-    // TODO: Clear Token from async storage and set userToken state
+    await clearToken();
     setUserToken(null);
   };
 

@@ -11,11 +11,15 @@ import { CustomText } from '../../components/ui';
 import { ScreenLayout } from '../../components/layout';
 import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 import { sanitizeNumbersOnly } from '../../utils/sanitize';
+import { validateOTP } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 const OTPScreen = ({ route }: any) => {
   const { mobileNumber } = route.params;
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { signIn } = useAuth();
 
   const handleNumberChange = (text: string) => {
     const cleanedOTP = sanitizeNumbersOnly(text);
@@ -30,9 +34,13 @@ const OTPScreen = ({ route }: any) => {
 
     setLoading(true);
     try {
+      const response = await validateOTP(mobileNumber, otp);
       setLoading(false);
-      // TODO: Validate inout otp from user
-      // If validated then make the user logged in
+      if (response && response?.data && response?.data?.token) {
+        await signIn(response.data.token);
+      } else {
+        Alert.alert('Login Failed', 'No access token received.');
+      }
     } catch (error: any) {
       setLoading(false);
       console.error(error);
