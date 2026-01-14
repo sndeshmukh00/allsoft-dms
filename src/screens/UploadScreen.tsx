@@ -14,6 +14,7 @@ import { getDocumentTags, saveDocumentEntry } from '../services/api';
 import { ScreenLayout } from '../components/layout';
 import { CustomText, Dropdown, ChipsInput } from '../components/ui';
 import { moderateScale, verticalScale } from '../utils/responsive';
+import { useAuth } from '../context/AuthContext';
 
 const MINOR_HEADS_PERSONAL = ['John', 'Tom', 'Emily'];
 const MINOR_HEADS_PROFESSIONAL = ['Accounts', 'HR', 'IT', 'Finance'];
@@ -23,10 +24,12 @@ const UploadScreen = ({ navigation }: any) => {
   const [openDate, setOpenDate] = useState(false);
   const [majorHead, setMajorHead] = useState('');
   const [minorHead, setMinorHead] = useState('');
-  const [tags, setTags] = useState<{ label: string }[]>([]);
+  const [tags, setTags] = useState<{ tag_name: string }[]>([]);
   const [remarks, setRemarks] = useState('');
   const [file, setFile] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
+
+  const { userData } = useAuth();
 
   const minorHeads =
     majorHead === 'Personal'
@@ -86,22 +89,33 @@ const UploadScreen = ({ navigation }: any) => {
       name: file.name,
     });
 
+    const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(
+      date.getMonth() + 1,
+    ).padStart(2, '0')}-${date.getFullYear()}`;
+
     const dataPayload = {
       major_head: majorHead,
       minor_head: minorHead,
-      document_date: date.toISOString().split('T')[0],
+      document_date: formattedDate,
       document_remarks: remarks,
       tags: tags,
+      user_id: userData?.userId || '',
     };
 
     formData.append('data', JSON.stringify(dataPayload));
 
     try {
-      await saveDocumentEntry(formData);
-      setUploading(false);
-      Alert.alert('Success', 'Document uploaded successfully', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      const result = await saveDocumentEntry(formData);
+
+      if (result?.status === true) {
+        setUploading(false);
+        Alert.alert('Success', 'Document uploaded successfully', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      } else {
+        setUploading(false);
+        Alert.alert('Error', 'Failed to upload document');
+      }
     } catch (error) {
       setUploading(false);
       console.error('Upload error', error);

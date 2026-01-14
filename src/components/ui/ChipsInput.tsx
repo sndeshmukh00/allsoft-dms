@@ -15,8 +15,8 @@ interface SearchedData {
 }
 
 interface ChipsInputProps {
-  chips: { label: string }[];
-  onChipsChange: (chips: { label: string }[]) => void;
+  chips: { tag_name: string }[];
+  onChipsChange: (chips: { tag_name: string }[]) => void;
   onSearch?: (term: string) => Promise<SearchedData>;
   searchEnabled?: boolean;
 }
@@ -65,8 +65,8 @@ const ChipsInput = ({ chips, onChipsChange, onSearch, searchEnabled = false }: C
   );
 
   const addChip = (tagName: string) => {
-    if (!chips.find(tag => tag.label === tagName)) {
-      onChipsChange([...chips, { label: tagName }]);
+    if (!chips.find(tag => tag.tag_name === tagName)) {
+      onChipsChange([...chips, { tag_name: tagName }]);
     }
     setInput('');
     setShowSuggestions(false);
@@ -80,7 +80,7 @@ const ChipsInput = ({ chips, onChipsChange, onSearch, searchEnabled = false }: C
   };
 
   const isChipSelected = (label: string) => {
-    return chips.some(chip => chip.label.toLowerCase() === label.toLowerCase());
+    return chips.some(chip => chip.tag_name.toLowerCase() === label.toLowerCase());
   };
 
   return (
@@ -96,7 +96,7 @@ const ChipsInput = ({ chips, onChipsChange, onSearch, searchEnabled = false }: C
             onPress={() => removeChip(index)}
           >
             <CustomText style={styles.chipText} size={14} color="#333">
-              {chip.label} ×
+              {chip.tag_name} ×
             </CustomText>
           </TouchableOpacity>
         ))}

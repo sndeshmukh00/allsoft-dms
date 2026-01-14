@@ -26,7 +26,7 @@ const SearchScreen = () => {
   const [toDate, setToDate] = useState<Date | null>(null);
   const [openFromDate, setOpenFromDate] = useState(false);
   const [openToDate, setOpenToDate] = useState(false);
-  const [tags, setTags] = useState<{ label: string }[]>([]);
+  const [tags, setTags] = useState<{ tag_name: string }[]>([]);
   const [searchText, setSearchText] = useState('');
 
   const [results, setResults] = useState<any[]>([]);
