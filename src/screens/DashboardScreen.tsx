@@ -35,8 +35,7 @@ const DashboardScreen = ({ navigation }: { navigation: any }) => {
           <TouchableOpacity
             style={[styles.card, styles.searchCard]}
             onPress={() => {
-              // TODO: Add Navigation to search screen here
-              // navigation.navigate('Search')
+              navigation.navigate('Search');
             }}
           >
             <CustomText
