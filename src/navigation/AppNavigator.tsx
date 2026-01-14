@@ -5,6 +5,7 @@ import { DashboardScreen } from '../screens';
 import { LoginScreen, OTPScreen } from '../screens/auth';
 import { useAuth } from '../context/AuthContext';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import UploadScreen from '../screens/UploadScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,11 +36,18 @@ const AppNavigator = () => {
             />
           </>
         ) : (
-          <Stack.Screen
-            name="Dashboard"
-            component={DashboardScreen}
-            options={{ headerShown: false }}
-          />
+          <>
+            <Stack.Screen
+              name="Dashboard"
+              component={DashboardScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Upload"
+              component={UploadScreen}
+              options={{ title: 'Upload Document' }}
+            />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>
