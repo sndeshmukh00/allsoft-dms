@@ -38,6 +38,29 @@ export const validateOTP = async (mobileNumber: string, otp: string) => {
   }
 };
 
+export const saveDocumentEntry = async (formData: FormData) => {
+  try {
+    const response = await apiClient.post('/saveDocumentEntry', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getDocumentTags = async (term: string = '') => {
+  try {
+    const response = await apiClient.post('/documentTags', { term });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 
 
 // asycnStorage local apis
