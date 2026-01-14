@@ -4,7 +4,7 @@ import { CustomText } from '../components/ui/';
 import { ScreenLayout } from '../components/layout';
 import { scale, verticalScale, moderateScale } from '../utils/responsive';
 
-const DashboardScreen = () => {
+const DashboardScreen = ({ navigation }: { navigation: any }) => {
   return (
     <ScreenLayout backgroundColor="#f5f5f5">
       <View style={styles.content}>
@@ -16,8 +16,7 @@ const DashboardScreen = () => {
           <TouchableOpacity
             style={[styles.card, styles.uploadCard]}
             onPress={() => {
-              // TODO: Add Navigation to upload screen here
-              // navigation.navigate('Upload')
+              navigation.navigate('Upload');
             }}
           >
             <CustomText
