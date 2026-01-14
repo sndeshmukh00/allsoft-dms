@@ -17,7 +17,7 @@ interface SearchedData {
 interface ChipsInputProps {
   chips: { label: string }[];
   onChipsChange: (chips: { label: string }[]) => void;
-  onSearch: (term: string) => Promise<SearchedData>;
+  onSearch?: (term: string) => Promise<SearchedData>;
   searchEnabled?: boolean;
 }
 
@@ -29,7 +29,7 @@ const ChipsInput = ({ chips, onChipsChange, onSearch, searchEnabled = false }: C
   const fetchTags = useCallback(
     async (term: string) => {
       try {
-        const response = await onSearch(term);
+        const response = await onSearch?.(term);
         const list = response?.data || [];
         console.log('response', list);
         setSuggestions(list);
