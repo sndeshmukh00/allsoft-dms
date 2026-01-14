@@ -36,8 +36,14 @@ const OTPScreen = ({ route }: any) => {
     try {
       const response = await validateOTP(mobileNumber, otp);
       setLoading(false);
-      if (response && response?.data && response?.data?.token) {
-        await signIn(response.data.token);
+      const data = response?.data || response;
+      const token = data?.token;
+      const user = {
+        userId: data?.user_id,
+        userName: data?.user_name,
+      };
+      if (token && user) {
+        await signIn(token, user);
       } else {
         Alert.alert('Login Failed', 'No access token received.');
       }

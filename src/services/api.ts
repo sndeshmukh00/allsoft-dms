@@ -77,8 +77,26 @@ export const storeToken = async (token: string) => {
   await AsyncStorage.setItem('auth_token', token);
 };
 
+export const storeUser = async (user: { userId: string; userName: string }) => {
+  try {
+    await AsyncStorage.setItem('user_data', JSON.stringify(user));
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const getToken = async () => {
   return await AsyncStorage.getItem('auth_token');
+};
+
+export const getUser = async () => {
+  try {
+    const data = await AsyncStorage.getItem('user_data');
+    return data ? JSON.parse(data) : null;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 };
 
 export const clearToken = async () => {
