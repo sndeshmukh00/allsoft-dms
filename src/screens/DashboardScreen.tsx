@@ -3,8 +3,11 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { CustomText } from '../components/ui/';
 import { ScreenLayout } from '../components/layout';
 import { scale, verticalScale, moderateScale } from '../utils/responsive';
+import { useAuth } from '../context/AuthContext';
 
 const DashboardScreen = ({ navigation }: { navigation: any }) => {
+  const { signOut } = useAuth();
+
   return (
     <ScreenLayout backgroundColor="#f5f5f5">
       <View style={styles.content}>
@@ -54,8 +57,7 @@ const DashboardScreen = ({ navigation }: { navigation: any }) => {
           <TouchableOpacity
             style={[styles.card, styles.logoutCard]}
             onPress={() => {
-              console.log('pressed');
-              //   TODO: implement logout thing here
+              signOut();
             }}
           >
             <CustomText
