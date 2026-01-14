@@ -60,6 +60,15 @@ export const getDocumentTags = async (term: string = '') => {
   }
 };
 
+export const searchDocumentEntry = async (searchParams: any) => {
+  try {
+    const response = await apiClient.post('/searchDocumentEntry', searchParams);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 
 
