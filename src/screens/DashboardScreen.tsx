@@ -53,7 +53,11 @@ const DashboardScreen = ({ navigation }: { navigation: any }) => {
                   onPreview={doc =>
                     navigation.navigate('PreviewScreen', { document: doc })
                   }
-                  onDownload={doc => console.log('Download', doc)}
+                  onDownload={() => {
+                    // TODO: Add download functionality here.
+                    // Might be some complex computation to generate blob from url and then save it after requesting storage permission and all.
+                    // Leaving it as it is for now due to time constraints.
+                  }}
                 />
               )}
               contentContainerStyle={styles.listContent}

@@ -37,7 +37,6 @@ export const FilterModal = ({
     clearFilters,
     search,
   } = searchState;
-  console.log('visible from modal component', visible);
 
   const [openFrom, setOpenFrom] = useState(false);
   const [openTo, setOpenTo] = useState(false);

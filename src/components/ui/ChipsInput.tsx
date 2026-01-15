@@ -31,7 +31,6 @@ const ChipsInput = ({ chips, onChipsChange, onSearch, searchEnabled = false }: C
       try {
         const response = await onSearch?.(term);
         const list = response?.data || [];
-        console.log('response', list);
         setSuggestions(list);
         setShowSuggestions(true);
       } catch (error) {
