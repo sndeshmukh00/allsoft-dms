@@ -1,126 +1,122 @@
-import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { CustomText } from '../components/ui/';
+import React, { useState } from 'react';
+import {
+  View,
+  FlatList,
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+} from 'react-native';
+import { CustomText, SearchBar, FilterModal } from '../components/ui';
 import { ScreenLayout } from '../components/layout';
-import { scale, verticalScale, moderateScale } from '../utils/responsive';
 import { useAuth } from '../context/AuthContext';
+import { useDocumentSearch } from '../hooks/useDocumentSearch';
+import { DashboardHeader, DocumentItem } from '../components/dashboard/';
+import { moderateScale, scale, verticalScale } from '../utils/responsive';
 
 const DashboardScreen = ({ navigation }: { navigation: any }) => {
-  const { signOut } = useAuth();
+  const { signOut, userData } = useAuth();
+  const searchState = useDocumentSearch(); // Custom Hook for search
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <ScreenLayout backgroundColor="#f5f5f5">
-      <View style={styles.content}>
-        <CustomText style={styles.title} size={28} weight="bold" color="#333">
-          Document Management System
-        </CustomText>
+    <ScreenLayout backgroundColor="#f5f5f5" noPadding>
+      <View style={styles.container}>
+        {/* Header */}
+        <DashboardHeader
+          userName={userData?.userName || 'user'}
+          onSignOut={signOut}
+        />
 
-        <View style={styles.menuContainer}>
-          <TouchableOpacity
-            style={[styles.card, styles.uploadCard]}
-            onPress={() => {
-              navigation.navigate('Upload');
-            }}
-          >
-            <CustomText
-              style={styles.cardTitle}
-              size={20}
-              weight="700"
-              color="#333"
-            >
-              Upload Document
-            </CustomText>
-            <CustomText style={styles.cardDesc} size={14} color="#666">
-              Add new files to the system
-            </CustomText>
-          </TouchableOpacity>
+        {/* Search & Filter Bar */}
+        <SearchBar
+          value={searchState.searchText}
+          onChangeText={searchState.setSearchText}
+          onSearch={searchState.search}
+          onFilterPress={() => setModalVisible(true)}
+        />
 
-          <TouchableOpacity
-            style={[styles.card, styles.searchCard]}
-            onPress={() => {
-              navigation.navigate('Search');
-            }}
-          >
-            <CustomText
-              style={styles.cardTitle}
-              size={20}
-              weight="700"
-              color="#333"
-            >
-              Search Documents
-            </CustomText>
-            <CustomText style={styles.cardDesc} size={14} color="#666">
-              Find and view existing files
-            </CustomText>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.card, styles.logoutCard]}
-            onPress={() => {
-              signOut();
-            }}
-          >
-            <CustomText
-              style={[styles.cardTitle, styles.logoutText]}
-              size={20}
-              weight="700"
-            >
-              Logout
-            </CustomText>
-            <CustomText style={styles.cardDesc} size={14} color="#666">
-              Sign out of the application
-            </CustomText>
-          </TouchableOpacity>
+        {/* Results List */}
+        <View style={styles.listContainer}>
+          {searchState.loading ? (
+            <ActivityIndicator
+              size="large"
+              color="#007AFF"
+              style={styles.activityIndicator}
+            />
+          ) : (
+            <FlatList
+              data={searchState.results}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <DocumentItem
+                  item={item}
+                  onPreview={doc =>
+                    navigation.navigate('PreviewScreen', { document: doc })
+                  }
+                  onDownload={doc => console.log('Download', doc)}
+                />
+              )}
+              contentContainerStyle={styles.listContent}
+              onEndReached={searchState.loadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                searchState.loadingMore ? (
+                  <ActivityIndicator size="small" color="#007AFF" />
+                ) : null
+              }
+              ListEmptyComponent={
+                <CustomText style={styles.emptyText} color="#666">
+                  {searchState.searched
+                    ? 'No documents found.'
+                    : 'Use search to find documents.'}
+                </CustomText>
+              }
+            />
+          )}
         </View>
+
+        {/* FAB for add new doc */}
+        <Pressable
+          style={styles.fab}
+          onPress={() => navigation.navigate('Upload')}
+        >
+          <CustomText style={styles.fabText}>+ Add New</CustomText>
+        </Pressable>
+
+        {/* Filter mOdal */}
+        <FilterModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          searchState={searchState}
+        />
       </View>
     </ScreenLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  content: {
+  container: { flex: 1 },
+  listContainer: {
     flex: 1,
+    padding: moderateScale(15),
+    backgroundColor: '#f9f9f9',
   },
-  title: {
-    marginBottom: verticalScale(30),
-    marginTop: verticalScale(20),
+  emptyText: { textAlign: 'center', marginTop: 50, fontSize: 16 },
+  fab: {
+    position: 'absolute',
+    bottom: verticalScale(20),
+    right: scale(20),
+    borderRadius: 40,
+    paddingHorizontal: 20,
+    backgroundColor: 'green',
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 5,
   },
-  menuContainer: {
-    flex: 1,
-    gap: verticalScale(20),
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: moderateScale(12),
-    padding: moderateScale(25),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: verticalScale(2) },
-    shadowOpacity: 0.1,
-    shadowRadius: moderateScale(4),
-    elevation: 3,
-  },
-  uploadCard: {
-    borderLeftWidth: scale(5),
-    borderLeftColor: '#007AFF',
-  },
-  searchCard: {
-    borderLeftWidth: scale(5),
-    borderLeftColor: '#FF9500',
-  },
-  logoutCard: {
-    borderLeftWidth: scale(5),
-    borderLeftColor: '#FF3B30',
-    marginTop: 'auto',
-  },
-  cardTitle: {
-    marginBottom: verticalScale(5),
-  },
-  logoutText: {
-    color: '#FF3B30',
-  },
-  cardDesc: {
-    color: '#666',
-  },
+  fabText: { fontSize: moderateScale(20), fontWeight: 'bold', color: '#fff' },
+  activityIndicator: { marginTop: verticalScale(20) },
+  listContent: { paddingBottom: verticalScale(100) },
 });
 
 export default DashboardScreen;
