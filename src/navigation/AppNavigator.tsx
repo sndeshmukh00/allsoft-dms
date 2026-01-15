@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { DashboardScreen, UploadScreen, SearchScreen } from '../screens';
+import { DashboardScreen, UploadScreen, SearchScreen, PreviewScreen } from '../screens';
 import { LoginScreen, OTPScreen } from '../screens/auth';
 import { useAuth } from '../context/AuthContext';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -50,6 +50,11 @@ const AppNavigator = () => {
               name="Search"
               component={SearchScreen}
               options={{ title: 'Search Document' }}
+            />
+            <Stack.Screen
+              name="PreviewScreen"
+              component={PreviewScreen}
+              options={{ title: 'Preview Document' }}
             />
           </>
         )}

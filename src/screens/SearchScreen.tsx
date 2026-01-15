@@ -19,7 +19,7 @@ import { moderateScale, verticalScale } from '../utils/responsive';
 const MINOR_HEADS_PERSONAL = ['John', 'Tom', 'Emily'];
 const MINOR_HEADS_PROFESSIONAL = ['Accounts', 'HR', 'IT', 'Finance'];
 
-const SearchScreen = () => {
+const SearchScreen = ({ navigation }: any) => {
   const [majorHead, setMajorHead] = useState('');
   const [minorHead, setMinorHead] = useState('');
   const [fromDate, setFromDate] = useState<Date | null>(null);
@@ -140,7 +140,7 @@ const SearchScreen = () => {
         <TouchableOpacity
           style={styles.actionBtn}
           onPress={() => {
-            // TODO: preview logic here
+            navigation.navigate('PreviewScreen', { document: item });
           }}
         >
           <CustomText style={styles.actionText} weight="500">
